@@ -1,0 +1,37 @@
+# SnailJob MCP Server 配置示例
+# 复制为 config.yml 后填入真实值。config.yml 已被 .gitignore 忽略，不会入库。
+#
+# 配置文件查找顺序：
+#   1. 环境变量 SNAILJOB_CONFIG 指定的绝对路径
+#   2. 当前工作目录下的 config.yml
+#   3. 本包根目录下的 config.yml
+
+# 缺省环境名，工具调用不传 env 时使用
+default_env: dev
+
+environments:
+  # 环境名自定义，工具的第一个参数 env 传这里定义的名字
+  dev:
+    # SnailJob 服务端控制台地址，必须包含 context-path（默认部署为 /snail-job）
+    base_url: http://127.0.0.1:8800/snail-job
+    # 命名空间名称（控制台页面上显示的名字），运行时自动解析为 id
+    namespace: 默认命名空间
+    # 组名可选：不填则从组列表自动发现（多环境组名可能不同，可显式指定覆盖）
+    group_name: gas
+    # 控制台登录账号
+    username: admin
+    # 控制台密码，支持环境变量覆盖：SNAILJOB_DEV_PASSWORD（优先级更高）
+    password: your-password-here
+    # 生产等敏感环境设为 true：所有写操作工具直接拒绝
+    read_only: false
+    # https 环境若为内网自签证书（无法通过系统 CA 校验）设为 false，默认 true
+    verify_ssl: false
+
+  prd:
+    base_url: http://prd-host:8800/snail-job
+    namespace: 生产命名空间
+    group_name: ~            # ~ 表示 null，自动发现
+    username: admin
+    password: env:SNAILJOB_PRD_PASSWORD   # 也可写 env:VARNAME 引用环境变量
+    read_only: true
+    verify_ssl: false                     # 内网 https 自签证书环境需要
